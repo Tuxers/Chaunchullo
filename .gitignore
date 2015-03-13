@@ -57,3 +57,6 @@ target/
 # sublime
 *.sublime-project
 *.sublime-workspace
+
+# default sqlite3 database
+db.sqlite3
