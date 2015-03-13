@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from board.models import *
 
 def index(request):
@@ -9,4 +9,11 @@ def index(request):
     })
 
 def get_post(request, post_id):
-    return HttpResponse('a single post' + post_id)
+    try:
+        post = Post.objects.get(pk=post_id)
+    except:
+        raise Http404('Post does not exist')
+
+    return render(request, 'posts/detail.html', {
+        'post' : post
+    })
