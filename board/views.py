@@ -26,4 +26,4 @@ def make_post(request):
     new_post = Post(title=title, content=content)
     new_post.save()
 
-    return HttpResponse(title + ' - ' + content);
+    return HttpResponse(title + ' - ' + content)
