@@ -5,7 +5,7 @@ from board.models import *
 def index(request):
     posts = Post.objects.order_by('-created_at')
     return render(request, 'posts/index.html', {
-        'posts' : posts
+        'posts' : posts,
     })
 
 def get_post(request, post_id):
