@@ -1,0 +1,9 @@
+<h1>{{post.title}}</h1>
+<p>
+    {{post.content}}
+    <ul>
+    {% for comment in post.comment_set.all %}
+        <li>{{comment.content}}</li>
+    {% endfor %}
+    </ul>
+</p>
