@@ -22,12 +22,13 @@
 <div class="row">
     <div class="large-8 medium-8 columns">
         <h3>Postear algo</h3>
-        <form action="{% url 'board:make_post' %}" method="POST">
+        <form action="{% url 'board:make_post' %}" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             <label for="title">Título</label>
             <input type="text" name="title" placeholder="Ejemplo: bale berga la bida" />
             <label for="content">Contenido</label>
             <textarea name="content" rows="5"></textarea>
+            <input type="file" name="file" />
             <input type="submit" value="Postear" class="small button"/>
         </form>
     </div>
@@ -42,6 +43,10 @@
             <div class="callout panel">
                 <a href="/board/{{post.id}}">{{post.title}}</a>
                 <p>{{post.content}}</p>
+                {% if post.file_set.all %}
+                    <a href="/board/file/{{post.file_set.all|first}}">Archivo adjunto</a>
+                {% else %}
+                {% endif %}
                 <ul>
                 {% for comment in post.comment_set.all %}
                     <li>{{comment.content}}</li>

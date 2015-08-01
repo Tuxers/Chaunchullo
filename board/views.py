@@ -1,6 +1,9 @@
+import os
+import magic
 from django.shortcuts import render
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from board.models import *
+from board.utils import save_uploaded_file
 
 def index(request):
     posts = Post.objects.order_by('-created_at')
@@ -18,12 +21,32 @@ def get_post(request, post_id):
         'post' : post
     })
 
-
 def make_post(request):
-    title = request.POST['title']
-    content = request.POST['content']
+    try:
+        title = request.POST['title']
+        content = request.POST['content']
+        if request.method == 'POST' and request.FILES:
+            file_name = save_uploaded_file(request.FILES['file'])
+        new_post = Post(title=title, content=content)
+        new_post.save()
 
-    new_post = Post(title=title, content=content)
-    new_post.save()
+        new_file = File(path=file_name, post=new_post)
+        new_file.save()
+    except Exception as e:
+        return HttpResponseRedirect('/error')
 
-    return HttpResponse(title + ' - ' + content)
+    return HttpResponseRedirect('/')
+
+def download_file(request, file_name):
+    path = '/home/donkeysharp/tmp/' + file_name
+    if os.path.exists(path):
+        response = HttpResponse()
+        f = open(path)
+        mime = magic.Magic(mime=True)
+        response['Content-type'] = mime.from_file(path)
+        response.content = f.read()
+        f.close()
+
+        return response
+    else:
+        raise Http404('Archivo no existe')
